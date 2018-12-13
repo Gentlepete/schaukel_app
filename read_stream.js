@@ -29,13 +29,14 @@ io.on('connection', function(s){
     let i = 0;
     let j = [0, 10, 25, 50, 75, 100, 150, 200, 250, 400, 600, 750, 900, 1024, 900, 750, 600, 400, 250, 200, 100, 75, 50, 25, 10, 0];
     let k = [1024, 900, 750, 600, 400, 250, 200, 100, 75, 50, 25, 0, 10, 25, 50, 75, 100, 150, 200, 250, 400, 600, 750, 900, 1024];
+    let l = j.map(function(x){ return x + 100});
 
     setInterval(function(){
 
         if(connected) socket.emit('sendData', j[i]);
         
 
-        if(connected) socket.emit('sendData2', k[i]);
+        if(connected) socket.emit('sendData2', l[i]);
 
         i++;
         if ( i == 24) {

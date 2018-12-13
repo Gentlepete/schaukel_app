@@ -1,4 +1,30 @@
+function showCam(video) {
+    $("canvas").addClass("hide");
+    $("video").addClass("show");
+}
+
+function hideCam() {
+    $("canvas").removeClass("hide");
+    $("video").removeClass("show");
+}
+
 $(document).ready(function(){
+
+    //implement WebCam code
+    let video = document.getElementById("webcam-video");
+
+    if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({video: true})
+        .then(function(stream) {
+            video.srcObject = stream;
+        })
+        .catch(function(error) {
+            console.log("Somethin went wrong");
+        });
+
+    }
+
+
     var ctx = document.getElementById('frequency-chart');
     var myLineChart = new Chart(ctx, {
         type: 'line',
@@ -8,13 +34,13 @@ $(document).ready(function(){
                 fill: false,
                 label: "",
                 borderColor: "#6c227e",
-                borderWidth: 10,
+                borderWidth: 2,
                 data: []
             }, {
                 fill: false,
                 label: "",
                 borderColor: "#0f0",
-                borderWidth: 5,
+                borderWidth: 2,
                 data: []
             }]
         },
@@ -38,8 +64,8 @@ $(document).ready(function(){
             yAxes: [{
                     display: false,
                     ticks: {
-                        beginAtZero: true,
-                        max: 1023
+                        max: 1200,
+                        min: -100
                     },
                     gridLines: {
                         display:false
@@ -51,8 +77,10 @@ $(document).ready(function(){
         
     var socket = io();
 
+    let chartOneValue = 0;
     socket.on('sendData', function(message) {
         message = Math.round(message / 10) * 10;
+        chartOneValue = message;
         myLineChart.data.labels.push("");
         myLineChart.data.datasets[0].data.push(message);
 
@@ -62,11 +90,13 @@ $(document).ready(function(){
             myLineChart.data.datasets[0].data.shift();
             myLineChart.data.datasets[1].data.shift();
             myLineChart.data.labels.shift();
-        }               
+        }  
     });
 
+    let chartTwoValue = 0;
     socket.on('sendData2', function(message) {
         message = Math.round(message / 10) * 10;
+        chartTwoValue = message;
         myLineChart.data.datasets[1].data.push(message);
 
         myLineChart.update(10);
@@ -76,4 +106,24 @@ $(document).ready(function(){
             // myLineChart.data.labels.shift();
         }
     });
+
+    var equalCounter = 0;
+
+    setInterval(function(){
+        // Check if chart values are smiliar
+        var difference = Math.abs(chartOneValue - chartTwoValue); 
+
+        if (difference <= 100) {
+            // console.log(difference);
+            equalCounter++;
+        } else {
+            equalCounter = 0;
+        }
+
+        if (equalCounter >= 100) {
+            equalCounter = 0;
+            showCam(video);
+        }
+        
+    }, 100);
 });

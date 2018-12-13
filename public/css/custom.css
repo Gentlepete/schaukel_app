@@ -4,6 +4,22 @@
     box-sizing: border-box;
 }
 
+video {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-200%);
+    max-width: 100vw;
+    height: 90vh;
+    margin: 0 auto;
+    transition: transform 1s ease;
+}
+
+video.show {
+    transform: translateY(-50%);
+}
+
 canvas {
     position: fixed;
     width: 100vw;
@@ -12,14 +28,9 @@ canvas {
     margin: 0 auto;
     top: 50%;
     transform: translateY(-50%);
+    transition: transform 1s ease;
 }
 
-video {
-    position: fixed;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    min-width: 100%;
-    min-height: 100%;
-    max-height: none;
+canvas.hide {
+    transform: translateY(100vw);
 }
