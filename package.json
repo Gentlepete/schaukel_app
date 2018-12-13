@@ -1,0 +1,23 @@
+{
+  "name": "schaukel_messe",
+  "version": "1.0.0",
+  "private": true,
+  "main": "read_stream.js",
+  "dependencies": {
+    "browserify": "^16.2.3",
+    "express": "^4.16.4",
+    "johnny-five": "^1.0.0",
+    "jquery": "^3.3.1",
+    "socket.io": "^2.1.1",
+    "socket.io-stream": "^0.9.1",
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrick und Nils",
+  "license": "ISC",
+  "description": ""
+}
