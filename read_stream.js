@@ -36,7 +36,7 @@ io.on('connection', function(s){
         if(connected) socket.emit('sendData', j[i]);
         
 
-        if(connected) socket.emit('sendData2', l[i]);
+        if(connected) socket.emit('sendData2', k[i]);
 
         i++;
         if ( i == 24) {

@@ -10,6 +10,12 @@ function hideCam() {
 
 $(document).ready(function(){
 
+    // Create Div Elements for Stars and Bokehs
+    for (let index = 0; index < 100; index++) {
+        $('.star-container').append('<div></div>'); 
+        $('.bokeh-container').append('<div></div>');
+    }
+
     //implement WebCam code
     let video = document.getElementById("webcam-video");
 
@@ -33,13 +39,15 @@ $(document).ready(function(){
             datasets: [{
                 fill: false,
                 label: "",
-                borderColor: "#6c227e",
+                backgroundColor: "transparent",
+                borderColor: "#8818A1",
                 borderWidth: 2,
                 data: []
             }, {
                 fill: false,
                 label: "",
-                borderColor: "#0f0",
+                backgroundColor: "transparent",
+                borderColor: "#F39324",
                 borderWidth: 2,
                 data: []
             }]
