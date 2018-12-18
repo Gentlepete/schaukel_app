@@ -1,6 +1,4 @@
-
 /* GENERAL STYLING *************************************************************************************/
-
 * {
   margin: 0;
   padding: 0;
@@ -8,14 +6,14 @@
 }
 
 /* WEBCAM VIDEO STYLING ********************************************************************************/
-
 video {
+  will-change: opacity;
+  transform: translateZ(0);
   position: fixed;
   top: 50%;
   left: 0;
   right: 0;
   transform: translateY(-50%);
-  max-width: 100vw;
   height: 90vh;
   margin: 0 auto;
   opacity: 0;
@@ -29,8 +27,9 @@ video.show {
 }
 
 /* CHART STYLING ***************************************************************************************/
-
-canvas {
+canvas#frequency-chart {
+  transform: translateZ(0);
+  will-change: opacity;
   position: fixed;
   width: 100vw;
   left: 0;
@@ -41,9 +40,16 @@ canvas {
   transition: opacity 1s ease;
 }
 
-canvas.hide {
+canvas#frequency-chart.hide {
   opacity: 0;
   /* transform: translateY(100vw); */
+}
+
+/* SNAPSHOT CANVAS STYLING ********************************************************************************/
+canvas#snapshot-canvas {
+  position: fixed;
+  top: 100vh;
+  left: 0;
 }
 
 /* BACKGROUND STYLING **********************************************************************************/
@@ -62,7 +68,6 @@ body {
 
 .star-container {
   $starWidth: 10px;
-
   position: fixed;
   top: 0;
   left: 0;
@@ -71,6 +76,8 @@ body {
   height: 100vh;
 
   & > div {
+    transform: translateZ(0);
+    will-change: transform;
     position: absolute;
     border-radius: 50%;
     mix-blend-mode: screen;
@@ -152,31 +159,30 @@ $primary_colors: #A135D8 #B13CC8 #7C72A0 #D562C7 #BD369D #7022B6 #D15BB1 #8E39A0
   height: 100vh;
   z-index: -2;
 
-  @function create-palette() {
-    $palette: ();
-    @for $i from 1 through 100 {
-      $palette: append($palette, mix(nth($primary_colors, random(length($primary_colors))), nth($primary_colors, random(length($primary_colors))), 60%));
-    }
-    @return $palette;
+  & > div {
+    transform: translateZ(0);
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    position: absolute;
+    mix-blend-mode: screen;
   }
-  $palette: create-palette();
   
-  @each $color in $palette {
-    $size: random(400);
-    & > div:nth-of-type(#{index($palette, $color)}){
+  @for $i from 1 through 50 {
+    $size: random(300);
+    & > div:nth-of-type(#{$i}) {
+      $color: nth($primary_colors, random(length($primary_colors)));
       background: $color;
       box-shadow: 0 0 random(30) + px random(30) + px $color;
       border-radius: 50%;
       width: $size + px;
-      height: $size +px;
-      opacity: 0.2 + random(10) / 100;
+      height: $size + px;
+      opacity: 0.05 + random(10) / 100;
+      transform: translate(-30vw, #{random(100) + vh});
 
-      transform: translate(#{- ($size + 30) + px}, #{random(100) + vh});
-
-      $endPositionX: random(20) + 100;
-      $framesName: "move-bokeh-" + #{index($palette, $color)};
-      $moveDuration: 15000 + random(10000) + ms; 
-      $delayDuration: random(10000) + ms;
+      $endPositionX: random(30) + 100;
+      $framesName: "move-bokeh-" + #{$i};
+      $moveDuration: 15000 + random(10000) + ms;
+      $delayDuration: random(20000) + ms;
 
       animation: #{$framesName} $moveDuration linear $delayDuration infinite;
       

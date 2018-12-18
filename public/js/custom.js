@@ -3,26 +3,61 @@ let movedTwo = false;
 let chartOneValue = 0;
 let chartTwoValue = 0;
 let equalCounter = 0;
+let differenceInterval;
 
-function showCam() {
-    $("canvas").addClass("hide");
+function showCam(video) {
+    $("canvas#frequency-chart").addClass("hide");
     $("video").addClass("show");
+    clearInterval(differenceInterval);
+
+    setTimeout(function(){
+        snapshot(video);
+    }, 2000);
 }
 
 function hideCam() {
-    $("canvas").removeClass("hide");
+    $("canvas#frequency-chart").removeClass("hide");
     $("video").removeClass("show");
     movedOne = false;
     movedTwo = false;
+    setDifferenceInterval();
 }
+
+function snapshot(video) {
+    let canvas, ctx;
+    canvas = document.getElementById("snapshot-canvas");
+    ctx = canvas.getContext('2d');
+    // Draws current image from the video element into the canvas
+    console.log("here");
+    console.log(canvas.width);
+    ctx.drawImage(video, 0,0, canvas.width, canvas.height);
+    saveImage();
+
+ }
+
+ function saveImage(){
+    imageData = document.getElementById("snapshot-canvas").toDataURL();
+
+    let dl = document.createElement("a");
+    dl.href = imageData;
+    dl.innerHTML = "";
+    dl.download = true; // Make sure the browser downloads the image
+    document.body.appendChild(dl); // Needs to be added to the DOM to work
+    dl.click(); // Trigger the click
+ }
 
 $(document).ready(function(){
 
     // Create Div Elements for Stars and Bokehs
     for (let index = 0; index < 100; index++) {
         $('.star-container').append('<div></div>'); 
+    }
+
+    for (let index = 0; index < 50; index++) {
         $('.bokeh-container').append('<div></div>');
     }
+
+
 
     //implement WebCam code
     let video = document.getElementById("webcam-video");
@@ -36,6 +71,8 @@ $(document).ready(function(){
             //console.log("Somethin went wrong");
         });
     }
+
+     
 
     let ctx = document.getElementById('frequency-chart');
     let myLineChart = new Chart(ctx, {
@@ -128,22 +165,27 @@ $(document).ready(function(){
         }
     });
 
-    setInterval(function(){
-        if (movedOne || movedTwo) {
-            // Check if chart values are smiliar
-            var difference = Math.abs(chartOneValue - chartTwoValue); 
+    function setDifferenceInterval(){
+        differenceInterval = setInterval(function(){
+            if (movedOne || movedTwo) {
 
-            if (difference <= 100) {
-                equalCounter++;
-            } else {
-                equalCounter = 0;
+                // Check if chart values are smiliar
+                var difference = Math.abs(chartOneValue - chartTwoValue); 
+    
+                if (difference <= 100) {
+                    equalCounter++;
+                } else {
+                    equalCounter = 0;
+                }
             }
-        }
-        
-        if (equalCounter >= 100) {
-            equalCounter = 0;
-            showCam();
-        }
-        
-    }, 100);
+            
+            if (equalCounter >= 100) {
+                equalCounter = 0;
+                showCam(video);
+            }
+            
+        }, 100);
+    }
+
+    //setDifferenceInterval();
 });
