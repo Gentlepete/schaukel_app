@@ -28,6 +28,7 @@ video.show {
 
 /* CHART STYLING ***************************************************************************************/
 canvas#frequency-chart {
+  display: none;
   transform: translateZ(0);
   will-change: opacity;
   position: fixed;
@@ -176,7 +177,7 @@ $primary_colors: #A135D8 #B13CC8 #7C72A0 #D562C7 #BD369D #7022B6 #D15BB1 #8E39A0
       border-radius: 50%;
       width: $size + px;
       height: $size + px;
-      opacity: 0.05 + random(10) / 100;
+      opacity: random(10) / 100;
       transform: translate(-30vw, #{random(100) + vh});
 
       $endPositionX: random(30) + 100;
