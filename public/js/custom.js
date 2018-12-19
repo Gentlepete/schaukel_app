@@ -187,5 +187,5 @@ $(document).ready(function(){
         }, 100);
     }
 
-    //setDifferenceInterval();
+    setDifferenceInterval();
 });
