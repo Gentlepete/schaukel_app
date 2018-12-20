@@ -1,0 +1,178 @@
+
+// Background Gradient
+
+body {
+    margin: 0;
+    /* background: linear-gradient(to top left, #3F1344 10%, #4A1742 20%,  #522357 50%, #5539B2); */
+    /* background: linear-gradient(to top left, #364156 10%, #292A48 20%,  #40476D 50%, #212d40);*/
+    background: linear-gradient(to top left, #292A48 20%,  #392061 50%, #29335C);
+    height: 100vh;
+    overflow: hidden;
+  }
+
+// little Stars
+
+.star-container {
+  $starWidth: 10px;
+  $starNum: 20;
+
+  position: absolute;
+  transform: translateY(-10vh);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+
+  .star {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    mix-blend-mode: screen;
+    background-image: radial-gradient(
+      hsl(0, 0%, 100%),
+      hsl(0, 0%, 100%) 10%,
+      hsla(180, 100%, 80%, 0) 56%
+    );
+
+    animation: fade-frames 200ms infinite, scale-frames 2s infinite;
+
+    @keyframes fade-frames {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes scale-frames {
+      0% {
+        transform: scale(0.4);
+      }
+
+      50% {
+        transform: scale(2.2);
+      }
+
+      100% {
+        transform: scale(0.4);
+      }
+    }
+  }
+
+  @for $i from 1 through 150 {
+    &:nth-child(#{$i}) {
+      $circleSize: random($starWidth);
+      width: $circleSize + px;
+      height: $circleSize + px;
+
+      $endPositionX: random(10) + 100;
+      $framesName: "move-star-" + $i;
+      $moveDuration: 35000 + random(4000) + ms;
+
+      animation-name: #{$framesName};
+      animation-duration: $moveDuration;
+      animation-delay: random(33000) + ms;
+
+      @keyframes #{$framesName} {
+        from {
+          transform: translate3d(
+            #{- random(10) + vw},
+            #{random(100) + vh},
+            0
+          );
+        }
+        
+        to {
+          transform: translate3d(
+            #{$endPositionX + vw},
+            #{random(100) + vh},
+            0
+          );
+        }
+      }
+
+      .star {
+        animation-delay: random(4000) + ms;
+      }
+    }
+  }
+}
+
+
+// Bokehs
+
+$primary_colors: #A135D8 #B13CC8 #7C72A0 #D562C7 #BD369D #7022B6 #D15BB1 #8E39A0 #6F38DC #6E44C2 #E2BCE1 #E8EBFA #D8B1F4 #DC59C1 #EAC5E6 #A83E9A #DFB2E9 #ffc15e #F7B05B #F7934C #364156;
+
+.bokeh-container {
+  position: absolute;
+
+  transform: translateY(-10vh);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+
+  .bokeh {
+    width: 100%;
+    height: 100%; 
+    animation: fade-frames 5s infinite;
+  }
+  @function create-palette() {
+    $palette: ();
+    @for $i from 1 through 150{
+      $palette: append($palette, mix(nth($primary_colors, random(length($primary_colors))), nth($primary_colors, random(length($primary_colors))), 60%));
+    }
+    @return $palette;
+  }
+  $palette: create-palette();
+  
+  @each $color in $palette {
+    $size: random(400) + px;
+    &:nth-child(#{index($palette, $color)}){
+      background: $color;
+      box-shadow: 0 0 random(50) + px random(50) + px $color;
+      border-radius: 50%;
+      width: $size;
+      height: $size;
+      opacity: random(5) / 100;
+      animation: float#{index($palette, $color)} 20 + random(10) +s infinite ease-in-out;
+    }
+  }
+  // Move Animation
+  @for $i from 1 through 150 {
+    &:nth-child(#{$i}) {
+
+      $endPositionX: random(10) + 100;
+      $framesName: "move-bokeh-" + $i;
+      $moveDuration: 50000 + random(4000) + ms; 
+
+      animation-name: #{$framesName};
+      animation-duration: $moveDuration;
+      animation-delay: random(45000) + ms;
+
+      @keyframes #{$framesName} {
+        from {
+          transform: translate3d(
+            #{- random(10) + vw},
+            #{random(100) + vh},
+            0
+          );
+        }
+        
+        to {
+          transform: translate3d(
+            #{$endPositionX + vw},
+            #{random(100) + vh},
+            0
+          );
+        }
+      }
+
+      .bokeh {
+        animation-delay: random(4000) + ms;
+      }
+    }
+  }
+}
