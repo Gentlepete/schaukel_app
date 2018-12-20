@@ -10,7 +10,7 @@ function showCam(video) {
     $("video").addClass("show");
     clearInterval(differenceInterval);
 
-    setTimeout(function(){
+    setTimeout(function () {
         snapshot(video);
     }, 2000);
 }
@@ -30,12 +30,12 @@ function snapshot(video) {
     // Draws current image from the video element into the canvas
     console.log("here");
     console.log(canvas.width);
-    ctx.drawImage(video, 0,0, canvas.width, canvas.height);
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     saveImage();
 
- }
+}
 
- function saveImage(){
+function saveImage() {
     imageData = document.getElementById("snapshot-canvas").toDataURL();
 
     let dl = document.createElement("a");
@@ -44,13 +44,13 @@ function snapshot(video) {
     dl.download = true; // Make sure the browser downloads the image
     document.body.appendChild(dl); // Needs to be added to the DOM to work
     dl.click(); // Trigger the click
- }
+}
 
-$(document).ready(function(){
+$(document).ready(function () {
 
     // Create Div Elements for Stars and Bokehs
     for (let index = 0; index < 100; index++) {
-        $('.star-container').append('<div></div>'); 
+        $('.star-container').append('<div></div>');
     }
 
     for (let index = 0; index < 50; index++) {
@@ -63,16 +63,16 @@ $(document).ready(function(){
     let video = document.getElementById("webcam-video");
 
     if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({video: true})
-        .then(function(stream) {
-            video.srcObject = stream;
-        })
-        .catch(function(error) {
-            //console.log("Somethin went wrong");
-        });
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+                video.srcObject = stream;
+            })
+            .catch(function (error) {
+                //console.log("Somethin went wrong");
+            });
     }
 
-     
+
 
     let ctx = document.getElementById('frequency-chart');
     let myLineChart = new Chart(ctx, {
@@ -109,30 +109,30 @@ $(document).ready(function(){
                 xAxes: [{
                     display: false,
                     gridLines: {
-                        display:false
+                        display: false
                     }
                 }],
-            yAxes: [{
+                yAxes: [{
                     display: false,
                     ticks: {
                         max: 1200,
                         min: -100
                     },
                     gridLines: {
-                        display:false
+                        display: false
                     }
                 }]
             }
         }
     });
-        
+
     let socket = io();
 
-    socket.on('sendData', function(message) {
+    socket.on('sendData', function (message) {
         message = Math.round(message / 10) * 10;
         chartOneValue = message;
 
-        if(message > 600 || message < 400) {
+        if (message > 600 || message < 400) {
             movedOne = true;
         }
 
@@ -141,18 +141,18 @@ $(document).ready(function(){
 
         myLineChart.update(10);
 
-        if(myLineChart.data.datasets[0].data.length > 38) {
+        if (myLineChart.data.datasets[0].data.length > 38) {
             myLineChart.data.datasets[0].data.shift();
             myLineChart.data.datasets[1].data.shift();
             myLineChart.data.labels.shift();
-        }  
+        }
     });
 
-    socket.on('sendData2', function(message) {
+    socket.on('sendData2', function (message) {
         message = Math.round(message / 10) * 10;
         chartTwoValue = message;
 
-        if(message > 600 || message < 400) {
+        if (message > 600 || message < 400) {
             movedTwo = true;
         }
 
@@ -160,30 +160,30 @@ $(document).ready(function(){
 
         myLineChart.update(10);
 
-        if(myLineChart.data.datasets[0].data.length > 38) {
+        if (myLineChart.data.datasets[0].data.length > 38) {
             myLineChart.data.datasets[1].data.shift();
         }
     });
 
-    function setDifferenceInterval(){
-        differenceInterval = setInterval(function(){
+    function setDifferenceInterval() {
+        differenceInterval = setInterval(function () {
             if (movedOne || movedTwo) {
 
                 // Check if chart values are smiliar
-                var difference = Math.abs(chartOneValue - chartTwoValue); 
-    
+                var difference = Math.abs(chartOneValue - chartTwoValue);
+
                 if (difference <= 100) {
                     equalCounter++;
                 } else {
                     equalCounter = 0;
                 }
             }
-            
+
             if (equalCounter >= 100) {
                 equalCounter = 0;
                 showCam(video);
             }
-            
+
         }, 100);
     }
 
