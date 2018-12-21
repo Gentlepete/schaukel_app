@@ -23,6 +23,9 @@ var pot2draft = console.draft('Potentiometer #2: ');
 
 
 // Server Setup
+var board, socket,
+  connected = false;
+
 var express = require('express')
 var app = express();
 var PORT = 3000;
@@ -35,11 +38,8 @@ http.listen(PORT, "localhost", function (err) {
   portdraft(chalk.red('Server listening on *:' + PORT));
 });
 
-// var jfive = require("johnny-five");
-// var board = new jfive.Board({ port: "COM5" });
-
-var board, socket,
-  connected = false;
+var jfive = require("johnny-five");
+var board = new jfive.Board();
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -59,7 +59,7 @@ io.on('connection', function (s) {
   streamdraft(chalk.red('Stream connection established to StreamID: ' + socket.id));
 });
 
-io.sockets.on("connect", () => setInterval(() => sendData(socket), 100));
+// io.sockets.on("connect", () => setInterval(() => sendData(socket), 100));
 
 // Code für dummy data wenn kein arduino angeschlossen ist
 let dataTarget = 1024;
@@ -116,41 +116,50 @@ const sendData = async socket => {
 
 
 
-// board.on("ready", function () {
+board.on("ready", function () {
 
-//   // Create a new `potentiometer` hardware instance.
-//   var potentiometer1 = new jfive.Sensor({
-//     pin: "A0",
-//     freq: 45
-//   });
+  // Create a new `potentiometer` hardware instance.
+  var potentiometer1 = new jfive.Sensor({
+    pin: "A0",
+    freq: 45
+  });
 
-//   var potentiometer2 = new jfive.Sensor({
-//     pin: "A1",
-//     freq: 45
-//   });
+  var potentiometer2 = new jfive.Sensor({
+    pin: "A1",
+    freq: 45
+  });
 
-//   // Inject the `sensor` hardware into
-//   // the Repl instance's context;
-//   // allows direct command line access
-//   board.repl.inject({
-//     pot1: potentiometer1
-//   });
+  // Inject the `sensor` hardware into
+  // the Repl instance's context;
+  // allows direct command line access
+  board.repl.inject({
+    pot1: potentiometer1
+  });
 
-//   board.repl.inject({
-//     pot2: potentiometer2
-//   });
+  board.repl.inject({
+    pot2: potentiometer2
+  });
 
-//   // "data" get the current reading from the potentiometer
-//   potentiometer1.on("data", function () {
-//     // We send the value when the browser is connected.
-//     if (connected) socket.emit('sendData', this.value);
-//   });
-//   // potentiometer2.on("data", function() {
-//   //   // We send the temperature when the browser is connected.
-//   //   if(connected) socket.emit('sendData2', this.value);
-//   // });
+  // "data" get the current reading from the potentiometer
+  potentiometer1.on("data", function () {
+    // We send the value when the browser is connected.
+    if (connected) {
+      socket.emit('sendData', this.value);
+      // Debug Message
+      pot1draft('Potentiometer #1: ', this.value);
+    }
+  });
 
-// });
+  potentiometer2.on("data", function () {
+    // We send the temperature when the browser is connected.
+    if (connected) {
+      socket.emit('sendData2', this.value);
+      // Debug Message
+      pot1draft('Potentiometer #2: ', this.value);
+    }
+  });
+
+});
 
 // References
 //
