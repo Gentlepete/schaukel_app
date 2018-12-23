@@ -132,9 +132,9 @@ $(document).ready(function () {
         message = Math.round(message / 10) * 10;
         chartOneValue = message;
 
-        if (message > 600 || message < 400) {
-            movedOne = true;
-        }
+        // if (message > 600 || message < 400) {
+        //     movedOne = true;
+        // }
 
         myLineChart.data.labels.push("");
         myLineChart.data.datasets[0].data.push(message);
@@ -152,9 +152,9 @@ $(document).ready(function () {
         message = Math.round(message / 10) * 10;
         chartTwoValue = message;
 
-        if (message > 600 || message < 400) {
-            movedTwo = true;
-        }
+        // if (message > 600 || message < 400) {
+        //     movedTwo = true;
+        // }
 
         myLineChart.data.datasets[1].data.push(message);
 
@@ -165,27 +165,27 @@ $(document).ready(function () {
         }
     });
 
-    function setDifferenceInterval() {
-        differenceInterval = setInterval(function () {
-            if (movedOne || movedTwo) {
+    // function setDifferenceInterval() {
+    //     differenceInterval = setInterval(function () {
+    //         if (movedOne || movedTwo) {
 
-                // Check if chart values are smiliar
-                var difference = Math.abs(chartOneValue - chartTwoValue);
+    //             // Check if chart values are smiliar
+    //             var difference = Math.abs(chartOneValue - chartTwoValue);
 
-                if (difference <= 100) {
-                    equalCounter++;
-                } else {
-                    equalCounter = 0;
-                }
-            }
+    //             if (difference <= 100) {
+    //                 equalCounter++;
+    //             } else {
+    //                 equalCounter = 0;
+    //             }
+    //         }
 
-            if (equalCounter >= 100) {
-                equalCounter = 0;
-                showCam(video);
-            }
+    //         if (equalCounter >= 100) {
+    //             equalCounter = 0;
+    //             showCam(video);
+    //         }
 
-        }, 100);
-    }
+    //     }, 100);
+    // }
 
-    setDifferenceInterval();
+    // setDifferenceInterval();
 });

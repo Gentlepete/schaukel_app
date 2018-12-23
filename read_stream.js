@@ -7,39 +7,83 @@ Looking for CUTE Unicode chars? Check out Unicute.
 How the HECK is that even possible? */
 // Setup
 const chalk = require('chalk')
-require('draftlog').into(console).addLineListener(process.stdin)
+require('draftlog').into(console)
 
 // Format and Define Debug Ouput Here
 var nodeStr = "Schaukel Experiment Alpha 0.1"
 console.log(chalk.dim('*'.repeat(nodeStr.length + 2)))
 console.draft(nodeStr)
 console.log(chalk.dim('*'.repeat(nodeStr.length + 2)))
-console.log();
-var portdraft = console.draft();
-var streamdraft = console.draft();
-console.log();
-var pot1draft = console.draft('Potentiometer #1: ');
-var pot2draft = console.draft('Potentiometer #2: ');
 
+console.log();
+var errordraft = console.draft();
+console.log();
+var webservermsgdraft = console.draft(chalk.bold.green('Webserver Status:') + " " + chalk.red(`WebServer not running.`));
+console.log();
+var browserdraft = console.draft(chalk.bold.green('Browser Status:') + " " + chalk.red("Browser client disconnected from the connection. Open Webserver Url with your Browser"));
+console.log();
+var debugdraft = console.draft();
+console.log()
+
+var pot1draft = console.draft(chalk.inverse('Potentiometer #1:'));
+var pot2draft = console.draft(chalk.inverse('Potentiometer #2:'));
 
 // Server Setup
-var board, socket,
-  connected = false;
+var jfive, board, socket, socketConnected = false;
 
-var express = require('express')
+var ip = require('underscore')
+  .chain(require('os').networkInterfaces())
+  .values()
+  .flatten()
+  .find({ family: 'IPv4', internal: true })
+  .value()
+  .address;
+
+var express = require('express');
 var app = express();
 var PORT = 3000;
 var http = require('http').Server(app);
-var io = require('socket.io')(http, { debug: true });
+var io = require('socket.io')(http);
+jfive = require("johnny-five");
 
-http.listen(PORT, "localhost", function (err) {
-  if (err) throw err;
-  // Update Console Draft for Debug
-  portdraft(chalk.red('Server listening on *:' + PORT));
+http.listen(PORT, 'localhost2');
+
+http.on('close', function () {
+  // Update Console Draft for Messages
+  webservermsgdraft(chalk.bold.green('Webserver Status:') + " " + chalk.red(`WebServer not running.`));
 });
 
-var jfive = require("johnny-five");
-var board = new jfive.Board();
+http.on('error', function (error) {
+  //Update Console Draft for debug messages
+  errordraft(chalk.bgRed('Error') + " " + chalk.red(error.code) + " " + chalk.bold.inverse(error.message.split('\n')[0]));
+
+  // If Connection already in Use Close all Server and Try again
+  if (error.code === 'EADDRINUSE') {
+    // Update Console Draft for Debug Message
+    debugdraft(chalk.bold.cyan('***DEBUG***') + " " + chalk.cyan('Close all Server Connection and Try Again.'));
+    setTimeout(() => {
+      http.close();
+      http.listen(PORT, HOST);
+    }, 1000);
+  }
+
+  //if Server Adress doesnt exists fallback to constant
+  if (error.code === 'ENOTFOUND') {
+    // Update Console Draft for Debug Message
+    debugdraft(chalk.bold.cyan('***DEBUG***') + " " + chalk.cyan('Server Adress doesnt exists fallback to constant. Close all Server Connection and Try Again.'));
+    setTimeout(() => {
+      http.close();
+      http.listen(PORT, ip);
+    }, 1000);
+  }
+
+});
+
+http.on('listening', function () {
+  var host = this.address().address;
+  // Update Console Draft for Messages
+  webservermsgdraft(chalk.bold.green('Webserver Status:') + " " + chalk.yellow(`WebServer started on the http://${host}:${PORT}`));
+});
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -48,20 +92,7 @@ app.get('/', function (req, res) {
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
 app.use(express.static('public'));
 
-io.on('connection', function (s) {
-  // Saving this for the board on ready callback function
-  socket = s;
-
-  // Tracking connection
-  connected = true;
-
-  // Update Console Draft for Debug
-  streamdraft(chalk.red('Stream connection established to StreamID: ' + socket.id));
-});
-
-// io.sockets.on("connect", () => setInterval(() => sendData(socket), 100));
-
-// Code für dummy data wenn kein arduino angeschlossen ist
+// dummy data
 let dataTarget = 1024;
 let i = 0;
 let j = [0, 10, 25, 50, 75, 100, 150, 200, 250, 400, 600, 750, 900, 1024, 900, 750, 600, 400, 250, 200, 100, 75, 50, 25, 10, 0];
@@ -69,8 +100,9 @@ let k = [1024, 900, 750, 600, 400, 250, 200, 100, 75, 50, 25, 0, 10, 25, 50, 75,
 let l = j.map(function (x) { return x + 100 });
 
 const sendData = async socket => {
+
   try {
-    if (connected) {
+    if (socket.connected) {
       socket.emit('sendData', j[i]);
 
       // Debug Message
@@ -88,7 +120,7 @@ const sendData = async socket => {
       // console.groupEnd();
     }
   } catch (error) {
-    console.error(`Error: ${error.code}`);
+    errordraft(chalk.bgRed(error.code) + error.message);
   }
   i++;
   if (i == 24) {
@@ -96,67 +128,98 @@ const sendData = async socket => {
   }
 };
 
-// setInterval(function () {
+io.on('connection', function (s) {
+  // Saving this for the board on ready callback function
+  socket = s;
 
-//   if (connected) {
-//     socket.emit('sendData', j[i]);
-//   }
+  browserdraft(chalk.bold.green('Browser Status:') + " " + chalk.yellow('Connection has been established with browser.'));
 
-
-
-//   if (connected) {
-//     socket.emit('sendData2', l[i]);
-//   }
-
-//   i++;
-//   if (i == 24) {
-//     i = 0;
-//   }
-// }, 100);
-
-
-
-board.on("ready", function () {
-
-  // Create a new `potentiometer` hardware instance.
-  var potentiometer1 = new jfive.Sensor({
-    pin: "A0",
-    freq: 45
+  socket.on('message', function (event) {
+    // Update Console Draft for Messages of successful Connection
+    browserdraft(chalk.bold.green('Browser Status:') + " " + chalk.yellow(event.type + " " + event.message));
   });
 
-  var potentiometer2 = new jfive.Sensor({
-    pin: "A1",
-    freq: 45
+  // Update Console Draft for Debug Message
+  debugdraft(chalk.bold.cyan('***DEBUG***') + " " + chalk.cyan('Stream connection established to StreamID: ' + socket.id));
+
+
+  // Update Console Draft for Messages because Browser disconnected
+  socket.on('disconnect', () => {
+    browserdraft(chalk.bold.green('Browser Status:') + " " + chalk.red('Browser client disconnected from the connection.'));
   });
 
-  // Inject the `sensor` hardware into
-  // the Repl instance's context;
-  // allows direct command line access
-  board.repl.inject({
-    pot1: potentiometer1
+
+
+
+  board = new jfive.Board({
+    repl: false,
+    debug: false,
   });
 
-  board.repl.inject({
-    pot2: potentiometer2
+  // Check the Board Messages
+  board.on("message", function (event) {
+    //Update Console Draft for debug messages
+    // Check the Board Messages
+    this.on("error", function () {
+      //Update Console Draft for debug messages
+      errordraft(chalk.bgRed(event.type) + " " + chalk.red(event.class) + " " + chalk.bold.inverse(event.message.split('\n')[0]));
+
+      // Update Console Draft for Debug Message
+      debugdraft(chalk.bold.cyan('***DEBUG***') + " " + chalk.cyan('No Board Connection. Set Dummy Values for the Pots...'));
+
+      // Set Interval for random Dummy Values
+      setInterval(() => sendData(socket), 100);
+    });
+
   });
 
-  // "data" get the current reading from the potentiometer
-  potentiometer1.on("data", function () {
-    // We send the value when the browser is connected.
-    if (connected) {
-      socket.emit('sendData', this.value);
-      // Debug Message
-      pot1draft('Potentiometer #1: ', this.value);
-    }
-  });
 
-  potentiometer2.on("data", function () {
-    // We send the temperature when the browser is connected.
-    if (connected) {
-      socket.emit('sendData2', this.value);
-      // Debug Message
-      pot1draft('Potentiometer #2: ', this.value);
-    }
+
+  board.on("ready", function () {
+
+    // Create a new `potentiometer` hardware instance.
+    var potentiometer1 = new jfive.Sensor({
+      pin: "A0",
+      freq: 45
+    });
+
+    var potentiometer2 = new jfive.Sensor({
+      pin: "A1",
+      freq: 45
+    });
+
+    // Inject the `sensor` hardware into
+    // the Repl instance's context;
+    // allows direct command line access
+    this.repl.inject({
+      pot1: potentiometer1
+    });
+
+    this.repl.inject({
+      pot2: potentiometer2
+    });
+
+    // "data" get the current reading from the potentiometer
+    potentiometer1.on("change", function () {
+      // We send the value when the browser is connected.
+      if (socket.connected) {
+        socket.emit('sendData', this.value);
+        // Debug Message
+        // You can create dynamic variables with eval.
+        // eval("dynamic" + i + " = val[i]");
+        pot1draft('Potentiometer #1: ', this.value);
+      }
+    });
+
+    potentiometer2.on("change", function () {
+      // We send the temperature when the browser is connected.
+      if (socket.connected) {
+        socket.emit('sendData2', this.value);
+        // Debug Message
+        pot2draft('Potentiometer #2: ', this.value);
+      }
+    });
+
   });
 
 });

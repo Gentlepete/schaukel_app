@@ -118,7 +118,7 @@ body {
       $delayDuration: random(20000) + ms;
       transform: translate(#{- ($circleSize + 10) + px}, #{random(100) + vh});
 
-      animation: "fade-frames" 200ms linear 0s infinite, #{$scaleAnimationName} 2s linear $scaleDelay infinite, #{$framesName} $moveDuration linear $delayDuration infinite;
+      animation: fade-frames 200ms linear 0s infinite, #{$scaleAnimationName} 2s linear $scaleDelay infinite, #{$framesName} $moveDuration linear $delayDuration infinite;
 
       @keyframes #{$scaleAnimationName} {
         0% {
