@@ -115,8 +115,8 @@ $(document).ready(function () {
                 yAxes: [{
                     display: false,
                     ticks: {
-                        max: 1200,
-                        min: -100
+                        max: 1,
+                        min: -1
                     },
                     gridLines: {
                         display: false
@@ -129,7 +129,7 @@ $(document).ready(function () {
     let socket = io();
 
     socket.on('sendData', function (message) {
-        message = Math.round(message / 10) * 10;
+        // message = Math.round(message / 10) * 10;
         chartOneValue = message;
 
         // if (message > 600 || message < 400) {
@@ -141,7 +141,7 @@ $(document).ready(function () {
 
         myLineChart.update(10);
 
-        if (myLineChart.data.datasets[0].data.length > 38) {
+        if (myLineChart.data.datasets[0].data.length > 100) {
             myLineChart.data.datasets[0].data.shift();
             myLineChart.data.datasets[1].data.shift();
             myLineChart.data.labels.shift();
@@ -149,7 +149,7 @@ $(document).ready(function () {
     });
 
     socket.on('sendData2', function (message) {
-        message = Math.round(message / 10) * 10;
+        // message = Math.round(message / 10) * 10;
         chartTwoValue = message;
 
         // if (message > 600 || message < 400) {
@@ -160,7 +160,7 @@ $(document).ready(function () {
 
         myLineChart.update(10);
 
-        if (myLineChart.data.datasets[0].data.length > 38) {
+        if (myLineChart.data.datasets[0].data.length > 100) {
             myLineChart.data.datasets[1].data.shift();
         }
     });

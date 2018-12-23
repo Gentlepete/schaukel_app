@@ -93,28 +93,24 @@ app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
 app.use(express.static('public'));
 
 // dummy data
-let dataTarget = 1024;
 let i = 0;
-let j = [0, 10, 25, 50, 75, 100, 150, 200, 250, 400, 600, 750, 900, 1024, 900, 750, 600, 400, 250, 200, 100, 75, 50, 25, 10, 0];
-let k = [1024, 900, 750, 600, 400, 250, 200, 100, 75, 50, 25, 0, 10, 25, 50, 75, 100, 150, 200, 250, 400, 600, 750, 900, 1024];
-let l = j.map(function (x) { return x + 100 });
 
 const sendData = async socket => {
 
   try {
     if (socket.connected) {
-      socket.emit('sendData', j[i]);
+      socket.emit('sendData', Math.sin(i));
 
       // Debug Message
-      pot1draft('Potentiometer #1: ', j[i])
+      pot1draft('Potentiometer #1: ', Math.sin(i))
       // console.group('sendData')
       // console.log(j[i]);
       // console.groupEnd();
 
-      socket.emit('sendData2', l[i]);
+      socket.emit('sendData2', Math.cos(i));
 
       // Debug Message
-      pot2draft('Potentiometer #2: ', l[i])
+      pot2draft('Potentiometer #2: ', Math.cos(i))
       // console.group('sendData2')
       // console.log(l[i]);
       // console.groupEnd();
@@ -122,10 +118,7 @@ const sendData = async socket => {
   } catch (error) {
     errordraft(chalk.bgRed(error.code) + error.message);
   }
-  i++;
-  if (i == 24) {
-    i = 0;
-  }
+  i += 0.1;
 };
 
 io.on('connection', function (s) {
