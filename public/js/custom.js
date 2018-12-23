@@ -49,11 +49,11 @@ function saveImage() {
 $(document).ready(function () {
 
     // Create Div Elements for Stars and Bokehs
-    for (let index = 0; index < 100; index++) {
+    for (let index = 0; index < 300; index++) {
         $('.star-container').append('<div></div>');
     }
 
-    for (let index = 0; index < 50; index++) {
+    for (let index = 0; index < 150; index++) {
         $('.bokeh-container').append('<div></div>');
     }
 
@@ -115,8 +115,8 @@ $(document).ready(function () {
                 yAxes: [{
                     display: false,
                     ticks: {
-                        max: 1,
-                        min: -1
+                        max: 1.5,
+                        min: -1.1
                     },
                     gridLines: {
                         display: false
@@ -165,27 +165,27 @@ $(document).ready(function () {
         }
     });
 
-    // function setDifferenceInterval() {
-    //     differenceInterval = setInterval(function () {
-    //         if (movedOne || movedTwo) {
+    function setDifferenceInterval() {
+        differenceInterval = setInterval(function () {
+            // if (movedOne || movedTwo) {
 
-    //             // Check if chart values are smiliar
-    //             var difference = Math.abs(chartOneValue - chartTwoValue);
+            // Check if chart values are smiliar
+            var difference = Math.abs(chartOneValue - chartTwoValue);
 
-    //             if (difference <= 100) {
-    //                 equalCounter++;
-    //             } else {
-    //                 equalCounter = 0;
-    //             }
-    //         }
+            if (difference <= 100) {
+                equalCounter++;
+            } else {
+                equalCounter = 0;
+            }
+            // }
 
-    //         if (equalCounter >= 100) {
-    //             equalCounter = 0;
-    //             showCam(video);
-    //         }
+            if (equalCounter >= 100) {
+                equalCounter = 0;
+                showCam(video);
+            }
 
-    //     }, 100);
-    // }
+        }, 100);
+    }
 
-    // setDifferenceInterval();
+    setDifferenceInterval();
 });

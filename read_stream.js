@@ -107,10 +107,10 @@ const sendData = async socket => {
       // console.log(j[i]);
       // console.groupEnd();
 
-      socket.emit('sendData2', Math.cos(i));
+      socket.emit('sendData2', Math.sin(i) + 0.25);
 
       // Debug Message
-      pot2draft('Potentiometer #2: ', Math.cos(i))
+      pot2draft('Potentiometer #2: ', Math.sin(i) + 0.25);
       // console.group('sendData2')
       // console.log(l[i]);
       // console.groupEnd();
@@ -161,7 +161,7 @@ io.on('connection', function (s) {
       debugdraft(chalk.bold.cyan('***DEBUG***') + " " + chalk.cyan('No Board Connection. Set Dummy Values for the Pots...'));
 
       // Set Interval for random Dummy Values
-      setInterval(() => sendData(socket), 100);
+      setInterval(() => sendData(socket), 150);
     });
 
   });

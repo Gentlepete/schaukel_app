@@ -103,7 +103,7 @@ body {
     }
   }
 
-  @for $i from 1 through 100 {
+  @for $i from 1 through 300 {
     & > div:nth-of-type(#{$i}) {
       $circleSize: random($starWidth);
       width: $circleSize + px;
@@ -168,7 +168,7 @@ $primary_colors: #A135D8 #B13CC8 #7C72A0 #D562C7 #BD369D #7022B6 #D15BB1 #8E39A0
     mix-blend-mode: screen;
   }
   
-  @for $i from 1 through 50 {
+  @for $i from 1 through 150 {
     $size: random(300);
     & > div:nth-of-type(#{$i}) {
       $color: nth($primary_colors, random(length($primary_colors)));
@@ -181,7 +181,7 @@ $primary_colors: #A135D8 #B13CC8 #7C72A0 #D562C7 #BD369D #7022B6 #D15BB1 #8E39A0
       transform: translate(-30vw, #{random(100) + vh});
 
       $endPositionX: random(30) + 100;
-      $framesName: "move-bokeh-" + #{$i};
+      $framesName: "move-bokeh-" + $i;
       $moveDuration: 15000 + random(10000) + ms;
       $delayDuration: random(20000) + ms;
 
