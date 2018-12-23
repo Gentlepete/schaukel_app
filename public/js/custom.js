@@ -34,14 +34,22 @@ function snapshot(video) {
 }
 
 function saveImage() {
-    imageData = document.getElementById("snapshot-canvas").toDataURL();
+    var ua = window.navigator.userAgent;
+ 
+    if (ua.indexOf("Chrome") > 0) {
+        // save image without file type
+        var canvas = document.getElementById("snapshot-canvas");
+        // document.location.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 
-    let dl = document.createElement("a");
-    dl.href = imageData;
-    dl.innerHTML = "";
-    dl.download = true; // Make sure the browser downloads the image
-    document.body.appendChild(dl); // Needs to be added to the DOM to work
-    dl.click(); // Trigger the click
+        // save image as png
+        var link = document.createElement('a');
+        link.download = "test.png";
+        link.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");;
+        link.click();
+    }
+    else {
+        alert("Please use Chrome");
+    }
 }
 
 $(document).ready(function () {

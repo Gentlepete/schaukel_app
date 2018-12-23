@@ -44,8 +44,10 @@ canvas#frequency-chart.hide {
 /* SNAPSHOT CANVAS STYLING ********************************************************************************/
 canvas#snapshot-canvas {
   position: fixed;
-  top: 100vh;
-  left: 0; }
+  top: 10vh;
+  left: 0; 
+  border: 1px solid;
+}
 
 /* BACKGROUND STYLING **********************************************************************************/
 body {
