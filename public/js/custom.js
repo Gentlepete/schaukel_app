@@ -28,8 +28,6 @@ function snapshot(video) {
     canvas = document.getElementById("snapshot-canvas");
     ctx = canvas.getContext('2d');
     // Draws current image from the video element into the canvas
-    console.log("here");
-    console.log(canvas.width);
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     saveImage();
 
@@ -49,11 +47,11 @@ function saveImage() {
 $(document).ready(function () {
 
     // Create Div Elements for Stars and Bokehs
-    for (let index = 0; index < 300; index++) {
+    for (let index = 0; index < 100; index++) {
         $('.star-container').append('<div></div>');
     }
 
-    for (let index = 0; index < 150; index++) {
+    for (let index = 0; index < 50; index++) {
         $('.bokeh-container').append('<div></div>');
     }
 

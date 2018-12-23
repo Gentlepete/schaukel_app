@@ -161,7 +161,7 @@ io.on('connection', function (s) {
       debugdraft(chalk.bold.cyan('***DEBUG***') + " " + chalk.cyan('No Board Connection. Set Dummy Values for the Pots...'));
 
       // Set Interval for random Dummy Values
-      setInterval(() => sendData(socket), 150);
+      setInterval(() => sendData(socket), 250);
     });
 
   });
