@@ -84,14 +84,14 @@ $(document).ready(function () {
                 label: "",
                 backgroundColor: "transparent",
                 borderColor: "#8818A1",
-                borderWidth: 2,
+                borderWidth: 4,
                 data: []
             }, {
                 fill: false,
                 label: "",
                 backgroundColor: "transparent",
                 borderColor: "#F39324",
-                borderWidth: 2,
+                borderWidth: 4,
                 data: []
             }]
         },
